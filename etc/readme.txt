@@ -32,3 +32,5 @@ Ideas:
 Assets:
 http://opengameart.org/content/rainy-street
 http://opengameart.org/content/city-background-repetitive-3
+https://github.com/tinyspeck/glitch-items/tree/master/inhabitants
+https://github.com/tinyspeck/glitch-avatars
