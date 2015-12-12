@@ -3,6 +3,9 @@ using System.Collections;
 
 public class GarbageCollector : MonoBehaviour {
 
+	public Transform key;
+	public float leadDistance = 500.0f;
+
 	private bool seen = false;
 	private bool invisible = false;
 	private float timeInvisible = 0.0f;
@@ -13,8 +16,16 @@ public class GarbageCollector : MonoBehaviour {
 		if (this.invisible && this.seen) {
 			this.timeInvisible += Time.deltaTime;
 			if (this.timeInvisible > timeLimit) {
-				Debug.Log ("Destroying "+this.name+".");
-				Destroy (this.gameObject);
+				if (key != null) {
+					float xDist = Mathf.Abs(key.position.x - this.transform.position.x);
+					if (xDist > leadDistance) {
+						Debug.Log ("Destroying "+this.name+".");
+						Destroy (this.gameObject);
+					}
+				} else {
+					Debug.Log ("Destroying "+this.name+".");
+					Destroy (this.gameObject);
+				}
 			}
 		}
 	}
