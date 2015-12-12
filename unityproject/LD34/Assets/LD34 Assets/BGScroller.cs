@@ -3,28 +3,22 @@ using System.Collections;
 
 public class BGScroller : MonoBehaviour {
 
-	public float scrollSpeed = 0.0f;
+	public Transform key;
 
-	public float halfWidth = 40.96f;
-
+	private float halfWidth;
+	public float leadDistance = 500.0f;
 	public bool spawnedNext = false;
 	public bool spawnedPrevious = false;
 
 	void Start(){
 		//todo: determine halfWidth from sprite component
-		if (scrollSpeed > 0) {
-			halfWidth *= -1.0f;
+		halfWidth = GetComponent<SpriteRenderer>().sprite.bounds.extents.x;
+		if (leadDistance < halfWidth) {
+			leadDistance = 2 * halfWidth;
 		}
 	}
 
-	// Update is called once per frame
-	void Update () {
-		if (scrollSpeed != 0.0f) {
-			this.transform.position = new Vector3 (this.transform.position.x + Time.deltaTime * scrollSpeed, this.transform.position.y, this.transform.position.z);
-		}
-	}
-
-	void OnBecameVisible(){
+	private void SpawnNeighbors(){
 		bool curNext = spawnedNext;
 		bool curPrev = spawnedPrevious;
 		if (!spawnedNext) {
@@ -40,6 +34,20 @@ public class BGScroller : MonoBehaviour {
 			Instantiate (this.gameObject, new Vector3 (this.transform.position.x - halfWidth, this.transform.position.y, this.transform.position.z), Quaternion.identity);
 			spawnedPrevious = true;
 			spawnedNext = curNext;
+		}
+	}
+
+	void OnBecameVisible(){
+		SpawnNeighbors ();
+	}
+
+	// Update is called once per frame
+	void Update () {
+		if ((!spawnedNext || !spawnedPrevious)) {
+			float xDist = Mathf.Abs(key.position.x - this.transform.position.x);
+			if (xDist < leadDistance) {
+				SpawnNeighbors ();
+			}
 		}
 	}
 }
