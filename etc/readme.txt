@@ -28,3 +28,7 @@ Ideas:
 	In Color Choose Mode, both buttons are used to navigate a binary tree to select one of 16 colors / tags.
 	When the character passes over a Taggable Spot, they tag it with their current Color. The goal is to match the Taggable Spot's desired Color with their selected Color.
 	The character must jump to ensure collision with Taggable Spots in the air, or to avoid obstacles or Taggable Spots that they don't think they can tag correctly.
+
+Assets:
+http://opengameart.org/content/rainy-street
+http://opengameart.org/content/city-background-repetitive-3
