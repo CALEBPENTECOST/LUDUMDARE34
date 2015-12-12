@@ -7,6 +7,9 @@ public class BGScroller : MonoBehaviour {
 
 	public float halfWidth = 40.96f;
 
+	public bool spawnedNext = false;
+	public bool spawnedPrevious = false;
+
 	void Start(){
 		//todo: determine halfWidth from sprite component
 		if (scrollSpeed > 0) {
@@ -22,6 +25,21 @@ public class BGScroller : MonoBehaviour {
 	}
 
 	void OnBecameVisible(){
-		Instantiate(this.gameObject, new Vector3(this.transform.position.x + halfWidth, this.transform.position.y, this.transform.position.z), Quaternion.identity);
+		bool curNext = spawnedNext;
+		bool curPrev = spawnedPrevious;
+		if (!spawnedNext) {
+			spawnedNext = false;
+			spawnedPrevious = true;
+			Instantiate (this.gameObject, new Vector3 (this.transform.position.x + halfWidth, this.transform.position.y, this.transform.position.z), Quaternion.identity);
+			spawnedNext = true;
+			spawnedPrevious = curPrev;
+		}
+		if (!spawnedPrevious) {
+			spawnedPrevious = false;
+			spawnedNext = true;
+			Instantiate (this.gameObject, new Vector3 (this.transform.position.x - halfWidth, this.transform.position.y, this.transform.position.z), Quaternion.identity);
+			spawnedPrevious = true;
+			spawnedNext = curNext;
+		}
 	}
 }
