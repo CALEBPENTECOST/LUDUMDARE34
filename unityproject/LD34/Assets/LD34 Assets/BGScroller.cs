@@ -38,7 +38,7 @@ public class BGScroller : MonoBehaviour {
 				for (int i = 0; i < found.Length; i++) {
 					neighbors [i] = found [i] as GameObject;
 				}
-				Debug.Log("Found "+neighbors.Length+" neighbors for "+this.name+".");
+				//Debug.Log("Found "+neighbors.Length+" neighbors for "+this.name+".");
 			}
 		}
 

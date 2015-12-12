@@ -17,15 +17,12 @@ public class RandomizeHue : MonoBehaviour {
 		float hue = Random.Range(hueMin, hueMax);
 		float saturation = Random.Range(saturationMin, saturationMax);
 		float value = Random.Range(valueMin, valueMax);
-		Color randomColor = new Color (hue, saturation, value, 0.0f);
+		Vector4 randomColor = new Vector4 (hue, saturation, value, 0.0f);
 
 		foreach (Material m in GetComponent<Renderer>().materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
-				m.color = randomColor;
-				m.SetColor ("_Color", randomColor);
-				m.SetColor ("_COLOR", randomColor);
-				m.SetColor ("Alpha Color Key", randomColor);
-				Debug.Log ("Changed color of " + this.name + " to " + randomColor.ToString () + ".");
+				m.SetColor ("_HSVAAdjust", randomColor);
+				//Debug.Log ("Changed color of " + this.name + " to " + randomColor.ToString () + ".");
 			}
 		}
 
