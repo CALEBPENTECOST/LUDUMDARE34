@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BGScroller : MonoBehaviour {
 
-	public static float scrollSpeed = -0.9f;
+	public float scrollSpeed = 0.0f;
 
 	public float halfWidth = 40.96f;
 
