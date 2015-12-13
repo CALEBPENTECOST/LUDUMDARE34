@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
+
 namespace UnityStandardAssets._2D
 {
     [RequireComponent(typeof (ld34PlatformerCharacter2D))]
@@ -27,11 +28,15 @@ namespace UnityStandardAssets._2D
         /// </summary>
         private void Update()
         {
-            var buttonAPressed = CrossPlatformInputManager.GetButtonDown("A");
+
+            var buttonAPressed = CrossPlatformInputManager.GetButton("A");
             var buttonAReleased = CrossPlatformInputManager.GetButtonUp("A");
 
-            var buttonBPressed = CrossPlatformInputManager.GetButtonDown("B");
+            var buttonBPressed = CrossPlatformInputManager.GetButton("B");
             var buttonBReleased = CrossPlatformInputManager.GetButtonUp("B");
+
+            //if(buttonAPressed || buttonBPressed)
+            //Debug.Log("ld34 Buttons pressed: " + (buttonAPressed?"A ":"") + (buttonBPressed?"B":""));
 
             // Attempt to perform an action on the B button
             PerformButtonAction(
@@ -84,7 +89,7 @@ namespace UnityStandardAssets._2D
                 if (buttonPressed)
                 {
                     // We should send a "pressed" event
-                    m_Character.ReceiveUserInput(stateInputOnRelease);
+                    m_Character.ReceiveUserInput(stateInputOnPress);
                     //MoveNext(stateInputOnPress);
                     buttonCurrentlyHeld = true;
                     return;
@@ -102,6 +107,7 @@ namespace UnityStandardAssets._2D
 
         private void FixedUpdate()
         {
+            //Debug.Log("ld34 FixedUpdate");
             /*
             // Read the inputs.
             bool crouch = Input.GetKey(KeyCode.LeftControl);

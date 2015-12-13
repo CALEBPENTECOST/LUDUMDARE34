@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace UnityStandardAssets._2D
 {
 
@@ -86,6 +87,11 @@ namespace UnityStandardAssets._2D
         [SerializeField]
         private float m_MaxSpeedFull = 100f;               // The fastest the player can travel in the x axis.
 
+        private float m_CurrentSpeed = 0f;
+        private int m_MaxSpeedGainCount = 0;
+
+        [SerializeField]
+        public BoxCollider2D thePublicTriggerCollider;
 
         [SerializeField]
         private float m_JumpForce = 400f;                  // Amount of force added when the player jumps.
@@ -97,9 +103,9 @@ namespace UnityStandardAssets._2D
         private float m_JumpForceExtraMax = 120f;          // Max amount of force added when the player holds jump.
 
         [SerializeField]
-        private LayerMask m_WhatIsAllGround;                  // A mask determining what is ground to the character
+        private LayerMask m_GroundCantFallThrough;                  // A mask determining what is ground to the character
         [SerializeField]
-        private LayerMask m_WhatIsSolidGround;                  // A mask determining what is ground to the character
+        private LayerMask m_GroundCanFallThrough;                  // A mask determining what is ground to the character
 
         private Transform m_GroundCheck;    // A position marking where to check if the player is grounded.
         const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
@@ -123,9 +129,10 @@ namespace UnityStandardAssets._2D
         /// Constructor. Also creates/sets the initial state machine
         /// </summary>
         public ld34PlatformerCharacter2D()
-        {
+        {      
+
             // Players start airborn. Its the easiest way to do things
-            CurrentState = PlayerState.Airborn;
+            CurrentState = PlayerState.Grounded;
 
             // Lets set up our transitions table, as well
             transitions = new Dictionary<PlayerStateTransition, PlayerState>
@@ -186,6 +193,7 @@ namespace UnityStandardAssets._2D
         /// <returns> the current state, after the move</returns>
         public PlayerState MoveNext(StateInput input)
         {
+            //Debug.Log("MoveNext: " + input.ToString());
             var nextState = GetNextState(input);
 
             // Is there an error?
@@ -209,6 +217,8 @@ namespace UnityStandardAssets._2D
             else
             {
                 // We have a new, valid state! We should set our current state, and then act depending on our state
+                if(nextState != CurrentState)
+                Debug.Log("New State: " + nextState.ToString());
                 CurrentState = nextState;
                 reactToStateChange();
             }
@@ -256,7 +266,7 @@ namespace UnityStandardAssets._2D
         private void Awake()
         {
             // Setting up references.
-            m_GroundCheck = transform.Find("GroundCheck");
+            m_GroundCheck = transform.Find("Feet");
             m_Anim = GetComponent<Animator>();
             m_Rigidbody2D = GetComponent<Rigidbody2D>();
         }
@@ -266,30 +276,73 @@ namespace UnityStandardAssets._2D
         {
             bool touchingGround = false;
 
+            // Make the fucking physics behave
+            if (CurrentState == PlayerState.Fallthrough)
+            Physics2D.IgnoreLayerCollision(
+    LayerMask.NameToLayer("Default"), LayerMask.NameToLayer("Default"),
+    true);
+            else
+                Physics2D.IgnoreLayerCollision(
+    LayerMask.NameToLayer("Default"), LayerMask.NameToLayer("Default"),
+    false);
+
+
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
             // This can be done using layers instead but Sample Assets will not overwrite your project settings.
-            var groundToUse = m_WhatIsAllGround;
-            if (CurrentState == PlayerState.Fallthrough)
+            List<Collider2D> collisions = new List<Collider2D>();
+
+            // Try to hit all "solid ground things"
+            collisions.AddRange(Physics2D.OverlapAreaAll(
+                new Vector2(m_GroundCheck.position.x - k_GroundedRadius / 2, m_GroundCheck.position.y - k_GroundedRadius / 2),
+                new Vector2(m_GroundCheck.position.x + k_GroundedRadius / 2, m_GroundCheck.position.y),// + k_GroundedRadius / 2),
+                m_GroundCantFallThrough));
+
+
+            //collisions.AddRange(Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_GroundCantFallThrough));
+
+            // If we arent falling through, add the extra layers
+            if (CurrentState != PlayerState.Fallthrough)
             {
-                groundToUse = m_WhatIsSolidGround;
+                //Debug.Log("Not falling through!");
+                collisions.AddRange(Physics2D.OverlapAreaAll(
+    new Vector2(m_GroundCheck.position.x - k_GroundedRadius / 2, m_GroundCheck.position.y - k_GroundedRadius / 2),
+    new Vector2(m_GroundCheck.position.x + k_GroundedRadius / 2, m_GroundCheck.position.y),//+ k_GroundedRadius / 2),
+    m_GroundCanFallThrough));
+                //collisions.AddRange(Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_GroundCanFallThrough));
             }
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, groundToUse);
-            for (int i = 0; i < colliders.Length; i++)
+            
+            foreach(var collider in collisions)
             {
-                if (colliders[i].gameObject != gameObject)
+                if(collider.gameObject != gameObject)
                 {
                     touchingGround = true;
-                }                   
+                }
             }
 
+            // get the rigid body
+            var rigid = this.GetComponent<Rigidbody2D>();
+
+            // Firstly, are we touching anything considered "ground"?
+            if (touchingGround == true)
+            {
+                // make the rigid body collide
+                //rigid.WakeUp();
+            }
+            else
+            {
+                // make the rigid body not collide
+                //rigid.Sleep();
+            }
+
+
             // Are we not touching ground?
-            if (touchingGround == false)
+            if (touchingGround == false && CurrentState != PlayerState.Airborn && CurrentState != PlayerState.AirborneMenu)
             {
                 // We think we fell off of something
                 MoveNext(StateInput.FallOff);
             }
 
-            if (touchingGround == true)
+            if (touchingGround == true && CurrentState != PlayerState.Grounded && CurrentState != PlayerState.GroundedMenu)
             {
                 // We think we hit something
                 MoveNext(StateInput.HitGround);
@@ -300,10 +353,17 @@ namespace UnityStandardAssets._2D
 
             // Set the vertical animation
             m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+
+            // No matter what, we should set the horizontal speed
+
+            // Move the character
+            m_CurrentSpeed = m_MaxSpeedStart + m_MaxSpeedGain* m_MaxSpeedGainCount;
+            m_Rigidbody2D.velocity = new Vector2(m_CurrentSpeed, m_Rigidbody2D.velocity.y);
         }
 
         public void ReceiveUserInput(StateInput input)
         {
+            //Debug.Log("User input: " + input.ToString());
             // We should try to forward the input to the character.
             MoveNext(input);
         }
@@ -311,6 +371,7 @@ namespace UnityStandardAssets._2D
 
         public void Jump()
         {
+            //Debug.Log("Jump!");
             // Have we added any bonus jump yet?
             if (m_JumpForceExtraCurrent == -1)
             {
@@ -324,12 +385,16 @@ namespace UnityStandardAssets._2D
                 // We want to jump but arent on the ground. Try to add a little more velocity
                 if (m_JumpForceExtraCurrent <= m_JumpForceExtraMax)
                 {
+                    //Debug.Log("Adding velocity");
                     m_JumpForceExtraCurrent += m_JumpForceExtraAdd;
                     m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForceExtraAdd));
                 }
-
-                // Otherwise, we should exit the jumping state (no reason to be in it)
-                MoveNext(StateInput.JumpingFinished);
+                else
+                {
+                    //Debug.Log("Jump over");
+                    // Otherwise, we should exit the jumping state (no reason to be in it)
+                    MoveNext(StateInput.JumpingFinished);
+                }
             }
         }
 
