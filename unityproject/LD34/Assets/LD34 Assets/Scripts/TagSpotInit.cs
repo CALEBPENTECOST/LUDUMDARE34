@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TagSpotInit : MonoBehaviour {
 
-	public float desiredHue = 0.5f;
+	public float desiredHue = -0.5f;
 	/// <summary>
 	/// Negative value for not painted.
 	/// Set this value to trigger graphic update.
@@ -43,7 +43,7 @@ public class TagSpotInit : MonoBehaviour {
 		}
 
 		//set colors
-		Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);
+		Vector4 desiredColor = new Vector4 (Mathf.Clamp(desiredHue,0.0f,1.0f), 0.9f, 0.5f, 0.0f);
 		foreach (Material m in tagSpotFrontRender.materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
 				m.SetColor ("_HSVAAdjust", desiredColor);
@@ -91,8 +91,12 @@ public class TagSpotInit : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//ensure desiredhue is valid
+		if (desiredHue < 0.0f || desiredHue > 1.0f) {
+			desiredHue = pi.hues [Random.Range (0, pi.hues.Length)];
+		}
 		//repaint desired color, just in case it changes.
-		if (!isPainted && paintedHue >= 0.0f) {
+		if (!isPainted) {
 			Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);
 			foreach (Material m in tagSpotFrontRender.materials) {
 				if (m.shader.name == "Custom/HSVRangeShader") {
