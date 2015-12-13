@@ -27,6 +27,8 @@ public class TagSpotInit : MonoBehaviour {
 
 	private Vector4 whiteColor = new Vector4 (0.9f, 0.0f, 1.0f, 0.0f);
 
+	private PaintInventory pi;
+
 	// Use this for initialization
 	void Start () {
 		//grab references to children
@@ -55,10 +57,15 @@ public class TagSpotInit : MonoBehaviour {
 		}
 
 		tagSpotEmoticon.enabled = false;
+
+
+		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
 	}
 
-	public void paintMe(float newlyPaintedHue){
-		if (!isPainted && paintedHue >= 0.0f) {
+	public void paintMe(){
+		float newlyPaintedHue = pi.selectedHue;
+		if (!isPainted) {
+			Debug.Log ("Painting with hue "+newlyPaintedHue+", desiring "+desiredHue+" hue.");
 			//mark as done
 			isPainted = true;
 			paintedHue = newlyPaintedHue;
@@ -76,8 +83,10 @@ public class TagSpotInit : MonoBehaviour {
 			} else {
 				tagSpotEmoticon.sprite = failureEmoticon;
 			}
+			tagSpotEmoticon.enabled = true;
+		} else {
+			Debug.Log ("You tried to paint something that was already painted.");
 		}
-		Debug.Log ("You tried to paint something that was already painted.");
 	}
 	
 	// Update is called once per frame
@@ -93,11 +102,11 @@ public class TagSpotInit : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D coll) {
+	void OnTriggerEnter2D(Collider2D coll) {
+		Debug.Log(this.name + " was hit by " + coll.gameObject.name);
 		if (coll.gameObject.tag == "Player") {
 			//coll.gameObject.SendMessage ("ApplyDamage", 10);
-			Debug.Log(this.name + " was hit by " + coll.gameObject.name);
-			paintMe (this.desiredHue);
+			paintMe ();
 		}
 	}
 }
