@@ -19,7 +19,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 	public int totalMissed;
 
     [SerializeField]
-    private int numMatchesUntilDifficultyRaise = 5;
+    private int numMatchesUntilDifficultyRaise = 10;
     private int numDifficultyRaises = -1;
 
     [SerializeField]
@@ -44,6 +44,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 		if (scoreText == null) {
 			scoreText = this.gameObject.GetComponent<Text> ();
 		}
+		Debug.Assert (scoreText != null);
 		scoreText.color = Color.white;
 		scoreText.text = getScoreString();
 	}
@@ -52,8 +53,13 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 		return "Score: " + totalScore + System.Environment.NewLine +
 		"Highest Match Streak: " + highestMatchStreak + System.Environment.NewLine +
 		"Highest Miss Streak: " + highestMissStreak + System.Environment.NewLine +
-		"Total Matched: " + totalMatched + System.Environment.NewLine +
-		"Total Missed: " + totalMatched + System.Environment.NewLine;
+		//"Total Matched: " + totalMatched + System.Environment.NewLine +
+		//"Total Missed: " + totalMatched + System.Environment.NewLine +
+		"Time: " + (int)Time.realtimeSinceStartup;
+	}
+
+	void Update () {
+		scoreText.text = getScoreString();
 	}
 
 	public void TagCompleted(bool matches){
@@ -62,6 +68,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
             totalMatched++;
             if (highestMatchStreak < currentMatchStreak) {
 				scoreText.color = Color.green;
+				highestMatchStreak = currentMatchStreak;
 			} else {
 				scoreText.color = Color.white;
 			}
@@ -72,11 +79,11 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			currentMissStreak++;
 			if (highestMissStreak < currentMissStreak){
 				scoreText.color = Color.red;
+				highestMissStreak = currentMissStreak;
 			} else {
 				scoreText.color = Color.white;
 			}
 			currentMatchStreak = 0;
-			totalScore -= currentMissStreak;
 		}
 		scoreText.text = getScoreString();
 		//Debug.Log (scoreText.text);
