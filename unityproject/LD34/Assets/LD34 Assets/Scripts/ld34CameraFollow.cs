@@ -44,12 +44,12 @@ public class ld34CameraFollow : MonoBehaviour {
 		}*/
 
 		//Vector3 aheadTargetPos = target.position + Vector3.right*staticXOffset + Vector3.forward*m_OffsetZ;
-		Vector3 aheadTargetPosY = new Vector3(0, target.position.y, 0);
+		Vector3 aheadTargetPosY = new Vector3(0, target.position.y + staticYOffset, 0);
 		Vector3 currentPosY = new Vector3(0, transform.position.y, 0);
 		Vector3 midPosY = Vector3.SmoothDamp(currentPosY, aheadTargetPosY, ref m_CurrentVelocity, damping);
 
 
-		transform.position = midPosY + Vector3.up * staticYOffset +
+		transform.position = midPosY +
 			Vector3.right * (target.position.x + staticXOffset) + 
 			(Vector3.forward*m_OffsetZ);
 
