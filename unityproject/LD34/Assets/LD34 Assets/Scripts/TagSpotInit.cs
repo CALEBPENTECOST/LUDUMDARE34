@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TagSpotInit : MonoBehaviour {
 
-	public float desiredHue = 0.5f;
+	public float desiredHue = -0.5f;
 	/// <summary>
 	/// Negative value for not painted.
 	/// Set this value to trigger graphic update.
@@ -27,6 +27,8 @@ public class TagSpotInit : MonoBehaviour {
 
 	private Vector4 whiteColor = new Vector4 (0.9f, 0.0f, 1.0f, 0.0f);
 
+	private PaintInventory pi;
+
 	// Use this for initialization
 	void Start () {
 		//grab references to children
@@ -41,7 +43,7 @@ public class TagSpotInit : MonoBehaviour {
 		}
 
 		//set colors
-		Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);
+		Vector4 desiredColor = new Vector4 (Mathf.Clamp(desiredHue,0.0f,1.0f), 0.9f, 0.5f, 0.0f);
 		foreach (Material m in tagSpotFrontRender.materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
 				m.SetColor ("_HSVAAdjust", desiredColor);
@@ -55,10 +57,15 @@ public class TagSpotInit : MonoBehaviour {
 		}
 
 		tagSpotEmoticon.enabled = false;
+
+
+		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
 	}
 
-	public void paintMe(float newlyPaintedHue){
-		if (!isPainted && paintedHue >= 0.0f) {
+	public void paintMe(){
+		float newlyPaintedHue = pi.selectedHue;
+		if (!isPainted) {
+			Debug.Log ("Painting with hue "+newlyPaintedHue+", desiring "+desiredHue+" hue.");
 			//mark as done
 			isPainted = true;
 			paintedHue = newlyPaintedHue;
@@ -76,14 +83,20 @@ public class TagSpotInit : MonoBehaviour {
 			} else {
 				tagSpotEmoticon.sprite = failureEmoticon;
 			}
+			tagSpotEmoticon.enabled = true;
+		} else {
+			Debug.Log ("You tried to paint something that was already painted.");
 		}
-		Debug.Log ("You tried to paint something that was already painted.");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//ensure desiredhue is valid
+		if (desiredHue < 0.0f || desiredHue > 1.0f) {
+			desiredHue = pi.hues [Random.Range (0, pi.hues.Length)];
+		}
 		//repaint desired color, just in case it changes.
-		if (!isPainted && paintedHue >= 0.0f) {
+		if (!isPainted) {
 			Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);
 			foreach (Material m in tagSpotFrontRender.materials) {
 				if (m.shader.name == "Custom/HSVRangeShader") {
@@ -93,11 +106,11 @@ public class TagSpotInit : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D coll) {
+	void OnTriggerEnter2D(Collider2D coll) {
+		Debug.Log(this.name + " was hit by " + coll.gameObject.name);
 		if (coll.gameObject.tag == "Player") {
 			//coll.gameObject.SendMessage ("ApplyDamage", 10);
-			Debug.Log(this.name + " was hit by " + coll.gameObject.name);
-			paintMe (this.desiredHue);
+			paintMe ();
 		}
 	}
 }
