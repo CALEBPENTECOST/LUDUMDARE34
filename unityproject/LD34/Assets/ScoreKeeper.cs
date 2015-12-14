@@ -22,12 +22,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 	//private Vector4 goodColor = new Vector4 (0.341f, 0.9f, 0.5f, 0.0f);
 	//private Vector4 neutralColor = new Vector4 (0.8f, 0.0f, 0.0f, 0.0f);
 
-	private int totalScore{
-		get {
-			return highestMatchStreak - highestMissStreak;
-		}
-	}
-
+	private int totalScore;
 	public Text scoreText;
 
 	// Use this for initialization
@@ -56,6 +51,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			}
 			highestMatchStreak = Mathf.Max (currentMatchStreak, highestMatchStreak);
 			currentMissStreak = 0;
+			totalScore += currentMatchStreak;
 		} else {
 			currentMissStreak++;
 			if (highestMissStreak < currentMissStreak){
@@ -64,7 +60,9 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 				scoreText.color = Color.white;
 			}
 			currentMatchStreak = 0;
+			totalScore -= currentMissStreak;
 		}
 		scoreText.text = "Score: " + totalScore;
+		Debug.Log (scoreText.text);
 	}
 }
