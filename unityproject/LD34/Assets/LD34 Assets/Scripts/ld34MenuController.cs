@@ -32,7 +32,7 @@ public class ld34ColorController
         Yellow,
         Orange,
         Majenta,
-        Teal,
+        Cyan,
         Purple,
         White,
         Black,
@@ -103,6 +103,22 @@ public class ld34ColorController
             // Color is not enabled. return false
             return false; 
         }
+    }
+
+
+    /// <summary>
+    /// Returns true if the color is available
+    /// </summary>
+    /// <param name="colorNum"></param>
+    /// <returns></returns>
+    public bool isColorEnabled(Colors colorNum)
+    {
+        // If the color num is larger than the number enabled - 1, then it is not available
+        if ((int)colorNum > enabledColors - 1)
+        {
+            return false;
+        }
+        else return true;
     }
 
     /// <summary>
@@ -180,7 +196,7 @@ public class ld34MenuController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // We need to initialize a color controller. Start with two colors available
-        theColorController = new ld34ColorController(2);
+        theColorController = new ld34ColorController(8);
 	}
 
 
@@ -191,6 +207,12 @@ public class ld34MenuController : MonoBehaviour {
     public bool unlockNewColor()
     {
         return theColorController.enableAdditionalColor();
+    }
+
+    internal bool colorIsEnabled(ld34ColorController.Colors colorAtIndex)
+    {
+        // Is this color enabled in the selection table?
+        return theColorController.isColorEnabled(colorAtIndex);
     }
 
     /// <summary>

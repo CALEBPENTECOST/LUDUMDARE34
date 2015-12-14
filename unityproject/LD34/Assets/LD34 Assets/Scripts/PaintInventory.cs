@@ -4,6 +4,14 @@ using System;
 
 public class PaintInventory : MonoBehaviour
 {
+    private const float greenHue = 120 / 360f;
+    private const float redHue = 0 / 360f;
+    private const float blueHue = 240 / 360f;
+    private const float yellowHue = 60 / 360f;
+    private const float orangeHue = 30 / 360f;
+    private const float majentaHue = 300 / 360f;
+    private const float cyanHue = 180 / 360f;
+    private const float purpleHue = 270 / 360f;
     [SerializeField]
     ld34MenuController TheMenuController;
 
@@ -21,34 +29,10 @@ public class PaintInventory : MonoBehaviour
     static Texture2D colorSelectBar_purple;
     static Texture2D colorSelectBar_cyan;
 
-
-    static Color _black;
-    static Color _white;
-    static Color _gray;
-    static Color _green;
-    static Color _red;
-    static Color _blue;
-    static Color _orange;
-    static Color _yellow;
-    static Color _majenta;
-    static Color _purple;
-    static Color _cyan;
-
     static bool initialized = false;
 
     static void Init()
     {
-        _black = (Color.black);
-        _white = (Color.white);
-        _gray = (Color.gray);
-        _green = (Color.green);
-        _red = (Color.red);
-        _blue = (Color.blue);
-        _orange = (new Color(1f, 0.62f, 0f));
-        _yellow = (Color.yellow);
-        _majenta = (Color.magenta);
-        _purple = (new Color(0.5f, 0f, 0.5f));
-        _cyan = (Color.cyan);
 
         colorSelectBar_black = new Texture2D(1, 1);
         colorSelectBar_white = new Texture2D(1, 1);
@@ -62,17 +46,17 @@ public class PaintInventory : MonoBehaviour
         colorSelectBar_purple = new Texture2D(1, 1);
         colorSelectBar_cyan = new Texture2D(1, 1);
 
-        colorSelectBar_black.SetPixel(0, 0, _black);
-        colorSelectBar_white.SetPixel(0, 0, _white);
-        colorSelectBar_gray.SetPixel(0, 0, _gray);
-        colorSelectBar_green.SetPixel(0, 0, _green);
-        colorSelectBar_red.SetPixel(0, 0, _red);
-        colorSelectBar_blue.SetPixel(0, 0, _blue);
-        colorSelectBar_orange.SetPixel(0, 0, _orange);
-        colorSelectBar_yellow.SetPixel(0, 0, _yellow);
-        colorSelectBar_majenta.SetPixel(0, 0, _majenta);
-        colorSelectBar_purple.SetPixel(0, 0, _purple);
-        colorSelectBar_cyan.SetPixel(0, 0, _cyan);
+        colorSelectBar_black.SetPixel(0, 0, Color.HSVToRGB(0, 0, 0));
+        colorSelectBar_white.SetPixel(0, 0, Color.HSVToRGB(0,0,1));
+        colorSelectBar_gray.SetPixel(0, 0, Color.HSVToRGB(0,0,0.5f));
+        colorSelectBar_green.SetPixel(0, 0, Color.HSVToRGB(greenHue, 1, 1));
+        colorSelectBar_red.SetPixel(0, 0, Color.HSVToRGB(redHue, 1, 1));
+        colorSelectBar_blue.SetPixel(0, 0, Color.HSVToRGB(blueHue, 1, 1));
+        colorSelectBar_orange.SetPixel(0, 0, Color.HSVToRGB(orangeHue, 1, 1));
+        colorSelectBar_yellow.SetPixel(0, 0, Color.HSVToRGB(yellowHue, 1, 1));
+        colorSelectBar_majenta.SetPixel(0, 0, Color.HSVToRGB(majentaHue, 1, 1));
+        colorSelectBar_purple.SetPixel(0, 0, Color.HSVToRGB(purpleHue, 1, 1));
+        colorSelectBar_cyan.SetPixel(0, 0, Color.HSVToRGB(cyanHue, 1, 1));
 
         colorSelectBar_black.wrapMode = TextureWrapMode.Repeat;
         colorSelectBar_white.wrapMode = TextureWrapMode.Repeat;
@@ -132,32 +116,32 @@ public class PaintInventory : MonoBehaviour
         {
             case ld34ColorController.Colors.Green:
                 // Our hue for green is:
-                return 120 / 360f;
+                return greenHue;
 
             case ld34ColorController.Colors.Red:
-                return 0 / 360f;
+                return redHue;
 
             case ld34ColorController.Colors.Blue:
-                return 240 / 360f;
+                return blueHue;
 
             case ld34ColorController.Colors.Yellow:
-                return 60 / 360f;
+                return yellowHue;
 
             case ld34ColorController.Colors.Orange:
-                return 30 / 360f;
+                return orangeHue;
 
             case ld34ColorController.Colors.Majenta:
-                return 300 / 360f;
+                return majentaHue;
 
-            case ld34ColorController.Colors.Teal:
-                return 180 / 360f;
+            case ld34ColorController.Colors.Cyan:
+                return cyanHue;
 
             case ld34ColorController.Colors.Purple:
-                return 270 / 360f;
+                return purpleHue;
 
             default:
                 // Assume that default should be green
-                return 120 / 360f;
+                return greenHue;
         }
     }
 
@@ -183,28 +167,28 @@ public class PaintInventory : MonoBehaviour
         {
             case ld34ColorController.Colors.Green:
                 return colorSelectBar_green;
-                break;
+
             case ld34ColorController.Colors.Red:
                 return colorSelectBar_red;
-                break;
+
             case ld34ColorController.Colors.Blue:
                 return colorSelectBar_blue;
-                break;
+
             case ld34ColorController.Colors.Yellow:
                 return colorSelectBar_yellow;
-                break;
+
             case ld34ColorController.Colors.Orange:
                 return colorSelectBar_orange;
-                break;
+
             case ld34ColorController.Colors.Majenta:
                 return colorSelectBar_majenta;
-                break;
-            case ld34ColorController.Colors.Teal:
+
+            case ld34ColorController.Colors.Cyan:
                 return colorSelectBar_cyan;
-                break;
+
             case ld34ColorController.Colors.Purple:
                 return colorSelectBar_purple;
-                break;
+
             case ld34ColorController.Colors.White:
                 return colorSelectBar_white;
             case ld34ColorController.Colors.Black:
@@ -213,7 +197,7 @@ public class PaintInventory : MonoBehaviour
                 return colorSelectBar_gray;
             default:
                 return colorSelectBar_gray;
-                break;
+
         }
     }
 }
