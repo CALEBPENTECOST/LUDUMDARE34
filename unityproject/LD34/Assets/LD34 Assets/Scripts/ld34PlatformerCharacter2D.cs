@@ -123,6 +123,8 @@ namespace UnityStandardAssets._2D
         private int BHeldMax = -1;
 
         // Menu related
+        [SerializeField]
+        private ld34MenuController m_MenuController;                  // The menu controller, which input from the character can manipulate
 
 
         /// <summary>
@@ -202,11 +204,17 @@ namespace UnityStandardAssets._2D
                 // Is the reason we are in error because we are in a menu?
                 if (PlayerStateTransition.isMenuState(CurrentState))
                 {
+                    bool selectionFinished = false;
                     // This was a menu state. Perhaps we should pass the input into that function instead?
-                    // TODO make the menu react to menu button presses
+                    // Pass the input into the menu machine
+                    bool colorChanged = m_MenuController.performMenuSelection(input, ref selectionFinished);
 
-                    // Just return the state we get when we act upon the menu
-                    // CurrentState = CurrentState;
+                    // Did the selection finish?
+                    if(selectionFinished)
+                    {
+                        // It did! We dont really care what the current color is, so just move to the next state
+                        MoveNext(StateInput.MenuEnd);
+                    }
                 }
                 else
                 {
