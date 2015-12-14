@@ -44,17 +44,17 @@ public class TagSpotInit : MonoBehaviour {
         int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
         //Debug.Log("ColorIndex " + colorIndex);
         var selectedHue = pi.getHueFromColor(colorIndex);
-        Debug.Log(selectedHue);
+        //Debug.Log(selectedHue);
 
         // We have a random index. Lets get the hue value for this color
         desiredColor = new Vector4(selectedHue, 0.9f, 0.5f, 0.0f);
-        Debug.Log(desiredColor.x);
+        //Debug.Log(desiredColor.x);
 
         //set colors
         foreach (Material m in tagSpotRender.materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
 				m.SetColor ("_HSVAAdjust", desiredColor);
-                Debug.Log(desiredColor.x);
+                //Debug.Log(desiredColor.x);
             }
 		}
 

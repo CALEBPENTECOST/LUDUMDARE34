@@ -45,7 +45,15 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			scoreText = this.gameObject.GetComponent<Text> ();
 		}
 		scoreText.color = Color.white;
-		scoreText.text = "Score: 0";
+		scoreText.text = getScoreString();
+	}
+
+	private string getScoreString(){
+		return "Score: " + totalScore + System.Environment.NewLine +
+		"Highest Match Streak: " + highestMatchStreak + System.Environment.NewLine +
+		"Highest Miss Streak: " + highestMissStreak + System.Environment.NewLine +
+		"Total Matched: " + totalMatched + System.Environment.NewLine +
+		"Total Missed: " + totalMatched + System.Environment.NewLine;
 	}
 
 	public void TagCompleted(bool matches){
@@ -70,7 +78,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			currentMatchStreak = 0;
 			totalScore -= currentMissStreak;
 		}
-		scoreText.text = "Score: " + totalScore;
+		scoreText.text = getScoreString();
 		//Debug.Log (scoreText.text);
 
         //Debug.Log("Total matched: " + totalMatched);

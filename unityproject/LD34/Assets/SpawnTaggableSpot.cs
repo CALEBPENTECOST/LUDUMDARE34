@@ -10,7 +10,7 @@ public class SpawnTaggableSpot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (Random.Range (0.0f, 1.0f) < chance) {
+		if ((Random.Range (0.0f, 1.0f) < chance) && (spot == null)) {
 			//get list of tags
 			Object[] found = Resources.LoadAll (tagSpotFolder, typeof(GameObject));
 			//fisher-yates shuffle on tag list
