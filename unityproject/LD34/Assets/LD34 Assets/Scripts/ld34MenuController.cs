@@ -33,7 +33,10 @@ public class ld34ColorController
         Orange,
         Majenta,
         Teal,
-        Purple
+        Purple,
+        White,
+        Black,
+        Gray
     }
 
     /// <summary>
@@ -141,6 +144,11 @@ public class ld34ColorController
         enabledColors--;
         return true;
     }
+
+    internal Colors colorHeldAtIndex(int index)
+    {
+        return d_intToColor_AllPossibleColors[index];
+    }
 } // ld34 color controller
 
 #endregion
@@ -201,6 +209,11 @@ public class ld34MenuController : MonoBehaviour {
     public int getNumColorsLeft()
     {
         return theColorController.getEnabledColors();
+    }
+
+    public ld34ColorController.Colors colorAtIndex(int index)
+    {
+        return theColorController.colorHeldAtIndex(index);
     }
 
     /// <summary>
@@ -312,5 +325,13 @@ public class ld34MenuController : MonoBehaviour {
 	    // No need to really do anything on update
 	}
 
-    
+    internal int getMaxNumberOfSelections()
+    {
+        return ld34ColorController.NumSelections;
+    }
+
+    internal int getMaxNumberOfResults()
+    {
+        return ld34ColorController.NumColors;
+    }
 }
