@@ -361,6 +361,9 @@ namespace UnityStandardAssets._2D
 
             // Set the vertical animation
             m_Anim.SetFloat("vSpeed", m_Rigidbody2D.velocity.y);
+			// Set the horizontal animation
+			m_Anim.SetFloat("hSpeed", m_Rigidbody2D.velocity.x);
+			//Debug.Log ("Ground: " + touchingGround + ", vSpeed: " + m_Rigidbody2D.velocity.y + ", hSpeed: " + m_Rigidbody2D.velocity.x);
 
             // No matter what, we should set the horizontal speed
 

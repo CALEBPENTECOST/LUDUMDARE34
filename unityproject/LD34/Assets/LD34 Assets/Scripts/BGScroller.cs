@@ -16,10 +16,6 @@ public class BGScroller : MonoBehaviour {
 	public string neighborResourceFolder;
 
 	private float leadDistance = 50f;
-	/// <summary>
-	/// True to allow the object to spawn neighbors.
-	/// </summary>
-	public bool canSpawnNeighbors = true;
 
 	public float widthSpacerMin = 0.0f;
 	public float widthSpacerMax = 0.0f;
@@ -53,19 +49,18 @@ public class BGScroller : MonoBehaviour {
 
 	private void SpawnNeighbors(){
 		if ((nextNeighbor == null || previousNeighbor == null) && 
-				canSpawnNeighbors && 
 				(neighbors != null && neighbors.Length > 0)) {
 			GameObject neighbor = neighbors [Random.Range (0, neighbors.Length)];
 			float xOffset = halfWidth + neighbor.GetComponentInChildren<SpriteRenderer>().sprite.bounds.extents.x + Random.Range (widthSpacerMin, widthSpacerMax);
 			if (nextNeighbor == null) {
 				nextNeighbor = Instantiate (neighbor, new Vector3 (this.transform.position.x + xOffset, this.transform.position.y, this.transform.position.z), Quaternion.identity) as GameObject;
 				nextNeighbor.GetComponentInChildren<BGScroller> ().previousNeighbor = this.gameObject;
-				nextNeighbor.GetComponentInChildren<BGScroller> ().canSpawnNeighbors = true;
+				Debug.Log (this.name+"("+this.gameObject.transform.position.x+") spawned "+nextNeighbor.name+"("+nextNeighbor.gameObject.transform.position.x+").");
 			}
 			if (previousNeighbor == null) {
 				previousNeighbor = Instantiate (neighbor, new Vector3 (this.transform.position.x - xOffset, this.transform.position.y, this.transform.position.z), Quaternion.identity) as GameObject;
 				previousNeighbor.GetComponentInChildren<BGScroller>().nextNeighbor = this.gameObject;
-				previousNeighbor.GetComponentInChildren<BGScroller>().canSpawnNeighbors = true;
+				Debug.Log (this.name+"("+this.gameObject.transform.position.x+") spawned "+previousNeighbor.name+"("+previousNeighbor.gameObject.transform.position.x+").");
 			}
 		}
 	}

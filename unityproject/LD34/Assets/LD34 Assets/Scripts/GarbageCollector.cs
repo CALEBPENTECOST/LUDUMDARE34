@@ -21,7 +21,7 @@ public class GarbageCollector : MonoBehaviour {
 				}
 				float xDist = Mathf.Abs(key.position.x - this.transform.position.x);
 				if (xDist > leadDistance) {
-					Debug.Log ("Destroying " + this.name + ".");
+					Debug.Log ("Destroying " + this.name + "("+this.gameObject.transform.position.x+").");
 					Destroy (this.gameObject);
 				}
 			}

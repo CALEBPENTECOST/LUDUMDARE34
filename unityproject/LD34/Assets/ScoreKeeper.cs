@@ -18,7 +18,6 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 	public int highestMissStreak;
 	public int totalMissed;
 
-    [SerializeField]
     private int numMatchesUntilDifficultyRaise = 10;
     private int numDifficultyRaises = -1;
 
@@ -53,8 +52,8 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 		return "Score: " + totalScore + System.Environment.NewLine +
 		"Highest Match Streak: " + highestMatchStreak + System.Environment.NewLine +
 		"Highest Miss Streak: " + highestMissStreak + System.Environment.NewLine +
-		//"Total Matched: " + totalMatched + System.Environment.NewLine +
-		//"Total Missed: " + totalMatched + System.Environment.NewLine +
+		"Total Matched: " + totalMatched + System.Environment.NewLine +
+		"Total Missed: " + totalMissed + System.Environment.NewLine +
 		"Time: " + (int)Time.realtimeSinceStartup;
 	}
 
@@ -72,9 +71,21 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			} else {
 				scoreText.color = Color.white;
 			}
-			highestMatchStreak = Mathf.Max (currentMatchStreak, highestMatchStreak);
 			currentMissStreak = 0;
+	
 			totalScore += currentMatchStreak;
+
+			// Check our scores, is it time to raise/lower difficulty?
+			if (totalMatched % numMatchesUntilDifficultyRaise == 0)
+			{
+				//Debug.Log("adding color");
+				numDifficultyRaises++;
+				if(numDifficultyRaises > 0)
+				{
+					// raise the diffuculty!
+					theMenuController.unlockNewColor();
+				}
+			}
 		} else {
 			currentMissStreak++;
 			totalMissed++;
@@ -87,20 +98,6 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			currentMatchStreak = 0;
 		}
 		scoreText.text = getScoreString();
-		//Debug.Log (scoreText.text);
-
-        //Debug.Log("Total matched: " + totalMatched);
-        // Check our scores, is it time to raise/lower difficulty?
-        if (totalMatched % numMatchesUntilDifficultyRaise == 0)
-        {
-            //Debug.Log("adding color");
-            numDifficultyRaises++;
-            if(numDifficultyRaises > 0)
-            {
-                // raise the diffuculty!
-                theMenuController.unlockNewColor();
-            }
-        }
 
     }
 }
