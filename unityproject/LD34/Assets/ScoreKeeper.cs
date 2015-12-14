@@ -77,6 +77,7 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			totalScore += currentMatchStreak;
 		} else {
 			currentMissStreak++;
+			totalMissed++;
 			if (highestMissStreak < currentMissStreak){
 				scoreText.color = Color.red;
 				highestMissStreak = currentMissStreak;
