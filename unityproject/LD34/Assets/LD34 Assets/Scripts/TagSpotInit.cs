@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class TagSpotInit : MonoBehaviour {
@@ -20,9 +21,8 @@ public class TagSpotInit : MonoBehaviour {
 	public Sprite successEmoticon;
 	public Sprite failureEmoticon;
 
-
-
 	private PaintInventory pi;
+	private ScoreKeeper sk;
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +36,7 @@ public class TagSpotInit : MonoBehaviour {
 				this.tagSpotEmoticon = sr;
 			}
 		}
+		sk = GameObject.FindGameObjectWithTag ("ScoreKeeper").GetComponent<ScoreKeeper>();
 		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
 		//ensure desiredhue is valid
 		// We dont have a desired hue. Lets get one, depending on what colors are available
@@ -51,8 +52,6 @@ public class TagSpotInit : MonoBehaviour {
 		}
 
 		tagSpotEmoticon.enabled = false;
-
-
 	}
 
 	public void paintMe(){
@@ -69,6 +68,8 @@ public class TagSpotInit : MonoBehaviour {
 				tagSpotEmoticon.sprite = failureEmoticon;
 			}
 			tagSpotEmoticon.enabled = true;
+
+			ExecuteEvents.Execute<IScoreKeeperTarget>(sk.gameObject, null,  (x,y) => x.TagCompleted(paintedSuccess));
 		}
 	}
 	
