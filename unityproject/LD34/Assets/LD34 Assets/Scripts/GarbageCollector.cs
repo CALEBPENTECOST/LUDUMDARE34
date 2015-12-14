@@ -9,21 +9,19 @@ public class GarbageCollector : MonoBehaviour {
 	private bool seen = false;
 	private bool invisible = false;
 	private float timeInvisible = 0.0f;
-	public static float timeLimit = 60.0f; 
+	public static float timeLimit = 20.0f; 
 
 	// Update is called once per frame
 	void Update () {
 		if (this.invisible && this.seen) {
 			this.timeInvisible += Time.deltaTime;
 			if (this.timeInvisible > timeLimit) {
-				if (key != null) {
-					float xDist = Mathf.Abs(key.position.x - this.transform.position.x);
-					if (xDist > leadDistance) {
-						Debug.Log ("Destroying "+this.name+".");
-						Destroy (this.gameObject);
-					}
-				} else {
-					Debug.Log ("Destroying "+this.name+".");
+				if (key == null) {
+					key = GameObject.FindGameObjectWithTag ("Player").GetComponent<Transform>();
+				}
+				float xDist = Mathf.Abs(key.position.x - this.transform.position.x);
+				if (xDist > leadDistance) {
+					Debug.Log ("Destroying " + this.name + ".");
 					Destroy (this.gameObject);
 				}
 			}

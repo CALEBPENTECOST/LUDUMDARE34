@@ -56,8 +56,8 @@ public class TagSpotInit : MonoBehaviour {
 	}
 
 	public void paintMe(){
-		float newlyPaintedHue = pi.selectedHue;
 		if (!isPainted) {
+			float newlyPaintedHue = pi.selectedHue;
 			Debug.Log ("Painting with hue "+newlyPaintedHue+", desiring "+desiredColor.x+" hue.");
 			//mark as done
 			isPainted = true;
@@ -69,8 +69,6 @@ public class TagSpotInit : MonoBehaviour {
 				tagSpotEmoticon.sprite = failureEmoticon;
 			}
 			tagSpotEmoticon.enabled = true;
-		} else {
-			Debug.Log ("You tried to paint something that was already painted.");
 		}
 	}
 	
@@ -97,4 +95,12 @@ public class TagSpotInit : MonoBehaviour {
 			paintMe ();
 		}
 	}
+
+	void OnTriggerStay2D(Collider2D coll) {
+		if (coll.gameObject.tag == "Player") {
+			//coll.gameObject.SendMessage ("ApplyDamage", 10);
+			paintMe ();
+		}
+	}
+		
 }
