@@ -93,8 +93,13 @@ public class TagSpotInit : MonoBehaviour {
 	void Update () {
 		//ensure desiredhue is valid
 		if (desiredHue < 0.0f || desiredHue > 1.0f) {
-			desiredHue = pi.hues [Random.Range (0, pi.hues.Length)];
+            // We dont have a desired hue. Lets get one, depending on what colors are available
+            int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
+
+            // We have a random index. Lets get the hue value for this color
+            desiredHue = pi.getHueFromColor(colorIndex);
 		}
+
 		//repaint desired color, just in case it changes.
 		if (!isPainted) {
 			Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);

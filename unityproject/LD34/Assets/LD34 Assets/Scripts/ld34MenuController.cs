@@ -31,9 +31,9 @@ public class ld34ColorController
         Blue,
         Yellow,
         Orange,
-        Purple,
+        Majenta,
         Teal,
-        Pink
+        Purple
     }
 
     /// <summary>
