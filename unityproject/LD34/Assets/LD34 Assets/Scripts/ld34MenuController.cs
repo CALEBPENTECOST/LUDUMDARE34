@@ -196,7 +196,7 @@ public class ld34MenuController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // We need to initialize a color controller. Start with two colors available
-        theColorController = new ld34ColorController(8);
+        theColorController = new ld34ColorController(2);
 	}
 
 
