@@ -134,8 +134,18 @@ public class ld34GUI : MonoBehaviour {
     private void paintColorBoxForColorAtIndex(int colorSelectBarStartX, int colorSelectBarStartY, int barChunkWidth, int colorStartPosFromOwnEdge, int colorWidth, int colorBoxHeight, int colorBoxHeight_fromTop, int boxIndex)
     {
         var colorAtIndex = theMenuController.colorAtIndex(boxIndex);
-        // Now get a texture from the paintcan for the color we should draw
-        Texture2D drawingPaint = PaintInventory.getGUITextureForColor(colorAtIndex);
+        Texture2D drawingPaint;
+        if (theMenuController.colorIsEnabled(colorAtIndex))
+        {        
+            // Now get a texture from the paintcan for the color we should draw
+            drawingPaint = PaintInventory.getGUITextureForColor(colorAtIndex);
+        }
+        else
+        {
+            // Now get a texture from the paintcan for the color we should draw
+            drawingPaint = PaintInventory.getGUITextureForColor(ld34ColorController.Colors.Gray);
+        }
+
 
         // start drawing at index*width plus start
         GUI.DrawTexture(
