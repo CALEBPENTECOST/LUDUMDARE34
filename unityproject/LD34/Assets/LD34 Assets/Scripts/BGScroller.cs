@@ -15,7 +15,7 @@ public class BGScroller : MonoBehaviour {
 	/// </summary>
 	public string neighborResourceFolder;
 
-	private float leadDistance = 50f;
+	private float leadDistance = 50.0f;
 
 	public float widthSpacerMin = 0.0f;
 	public float widthSpacerMax = 0.0f;
@@ -39,12 +39,13 @@ public class BGScroller : MonoBehaviour {
 			}
 		}
 
-
+		Debug.Assert (neighbors != null);
+		Debug.Assert (neighbors.Length != 0);
 
 		halfWidth = this.gameObject.GetComponentInChildren<SpriteRenderer>().sprite.bounds.extents.x;
-		if (leadDistance < halfWidth) {
+		/*if (leadDistance < halfWidth) {
 			leadDistance = 2 * halfWidth;
-		}
+		}*/
 	}
 
 	private void SpawnNeighbors(){
@@ -66,19 +67,23 @@ public class BGScroller : MonoBehaviour {
 	}
 
 	void OnBecameVisible(){
+		//Debug.Log (this.name + "(" + this.gameObject.transform.position.x + ")  became visible.");
 		SpawnNeighbors ();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if (key == null) {
-			key = GameObject.FindGameObjectWithTag ("Player").GetComponent<Transform>();
+			GameObject foundPlayer = GameObject.FindGameObjectWithTag ("Player");
+			//Debug.Log ("Found " + foundPlayer.name);
+			key = foundPlayer.GetComponent<Transform>();
 		}
-		if (key != null) {
-			float xDist = Mathf.Abs (key.position.x - this.transform.position.x);
-			if (xDist < leadDistance) {
-				SpawnNeighbors ();
-			}
+		Debug.Assert (key != null);
+		float xDist = Mathf.Abs (key.position.x - this.gameObject.transform.position.x);
+
+		if (xDist < leadDistance) {
+			//Debug.Log (this.name + "(" + this.gameObject.transform.position.x + ")  is "+xDist+" away from player ("+key.position.x+").");
+			SpawnNeighbors ();
 		}
 	}
 }
