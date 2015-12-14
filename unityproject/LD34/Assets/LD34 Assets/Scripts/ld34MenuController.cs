@@ -92,14 +92,14 @@ public class ld34ColorController
         {
             // Color is enabled. Get it from the dictionary
             color = d_intToColor_AllPossibleColors[colorNum];
-            Debug.Log("Color to " + color.ToString() + " " + colorNum);
+            //Debug.Log("Color to " + color.ToString() + " " + colorNum);
             return true;
         }
         else
         {
-            Debug.Log("Color not enabled: "
-                + d_intToColor_AllPossibleColors[colorNum]
-                + " " + colorNum);
+            //Debug.Log("Color not enabled: "
+            //    + d_intToColor_AllPossibleColors[colorNum]
+            //    + " " + colorNum);
             // Color is not enabled. return false
             return false; 
         }
@@ -176,6 +176,8 @@ public class ld34MenuController : MonoBehaviour {
         B = 1
     }
 
+    private const int numColorsAtStart = 2;
+
     /// <summary>
     /// The currently selected color (defaults to green, the first color)
     /// </summary>
@@ -196,7 +198,7 @@ public class ld34MenuController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // We need to initialize a color controller. Start with two colors available
-        theColorController = new ld34ColorController(2);
+        theColorController = new ld34ColorController(numColorsAtStart);
 	}
 
 
@@ -206,6 +208,7 @@ public class ld34MenuController : MonoBehaviour {
     /// <returns></returns>
     public bool unlockNewColor()
     {
+        Debug.Log("Adding new color");
         return theColorController.enableAdditionalColor();
     }
 
@@ -282,7 +285,7 @@ public class ld34MenuController : MonoBehaviour {
             // Thats all our selections! We need to attempt to select a color
             selectionFinished = true;
             currentCountSelections = 0;
-            Debug.Log("selectionFinished");
+            //Debug.Log("selectionFinished");
             int selection = getIntegerRepresentationOfMenusSelectionArray(currentMenuSelection);
             if (theColorController.GetColorAtIndexIfAvailable(selection, ref currentlySelectedColor))
             {
@@ -319,14 +322,14 @@ public class ld34MenuController : MonoBehaviour {
         {
             int wantedMenuIndex = numSelections - 1 - i;
             bits[i] = (currentMenuSelection[wantedMenuIndex] == MenuSelection.B);
-            Debug.Log("Bit " + i + " is " + bits[i].ToString());
+            //Debug.Log("Bit " + i + " is " + bits[i].ToString());
         }
 
         // Convert the boolean array to an int
         BitArray ba = new BitArray(bits);
         var result = new int[1];
         ba.CopyTo(result, 0);
-        Debug.Log("Result: " + result[0]);
+        //Debug.Log("Result: " + result[0]);
         return result[0];
     }
 

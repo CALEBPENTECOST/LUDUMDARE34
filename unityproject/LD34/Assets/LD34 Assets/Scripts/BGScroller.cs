@@ -15,7 +15,7 @@ public class BGScroller : MonoBehaviour {
 	/// </summary>
 	public string neighborResourceFolder;
 
-	public float leadDistance = 500.0f;
+	private float leadDistance = 50f;
 	/// <summary>
 	/// True to allow the object to spawn neighbors.
 	/// </summary>

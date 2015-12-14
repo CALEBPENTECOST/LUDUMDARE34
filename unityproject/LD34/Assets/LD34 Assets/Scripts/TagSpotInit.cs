@@ -38,17 +38,24 @@ public class TagSpotInit : MonoBehaviour {
 		}
 		sk = GameObject.FindGameObjectWithTag ("ScoreKeeper").GetComponent<ScoreKeeper>();
 		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
-		//ensure desiredhue is valid
-		// We dont have a desired hue. Lets get one, depending on what colors are available
-		int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
-		// We have a random index. Lets get the hue value for this color
-		desiredColor = new Vector4 (pi.getHueFromColor(colorIndex), 0.9f, 0.5f, 0.0f);
+        //ensure desiredhue is valid
+        //Debug.Log("Num Available Hue Count " + pi.getCurrentAvailableHueCount());
+        // We dont have a desired hue. Lets get one, depending on what colors are available
+        int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
+        //Debug.Log("ColorIndex " + colorIndex);
+        var selectedHue = pi.getHueFromColor(colorIndex);
+        Debug.Log(selectedHue);
 
-		//set colors
-		foreach (Material m in tagSpotRender.materials) {
+        // We have a random index. Lets get the hue value for this color
+        desiredColor = new Vector4(selectedHue, 0.9f, 0.5f, 0.0f);
+        Debug.Log(desiredColor.x);
+
+        //set colors
+        foreach (Material m in tagSpotRender.materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
 				m.SetColor ("_HSVAAdjust", desiredColor);
-			}
+                Debug.Log(desiredColor.x);
+            }
 		}
 
 		tagSpotEmoticon.enabled = false;
@@ -90,7 +97,7 @@ public class TagSpotInit : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
-		Debug.Log(this.name + " was hit by " + coll.gameObject.name);
+		//Debug.Log(this.name + " was hit by " + coll.gameObject.name);
 		if (coll.gameObject.tag == "Player") {
 			//coll.gameObject.SendMessage ("ApplyDamage", 10);
 			paintMe ();
