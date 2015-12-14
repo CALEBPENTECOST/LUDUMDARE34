@@ -2,83 +2,68 @@
 using System.Collections;
 
 public class TagSpotInit : MonoBehaviour {
-
-	public float desiredHue = -0.5f;
-	/// <summary>
-	/// Negative value for not painted.
-	/// Set this value to trigger graphic update.
-	/// </summary>
-	private float paintedHue = -1.0f;
-
-	private bool isPainted = false;
+	private Vector4 white = new Vector4 (0.8f, 0.0f, 0.0f, 0.0f);
+	private Vector4 desiredColor;
+	//white
+	private Vector4 paintedColor;
+	public bool isPainted = false;
 
 	public bool paintedSuccess{
 		get {
-			return paintedHue == desiredHue;
+			return paintedColor == desiredColor;
 		}
 	}
 
-	private SpriteRenderer tagSpotFrontRender;
-	private SpriteRenderer tagSpotBackRender;
+	private SpriteRenderer tagSpotRender;
 	private SpriteRenderer tagSpotEmoticon;
 
 	public Sprite successEmoticon;
 	public Sprite failureEmoticon;
 
-	private Vector4 whiteColor = new Vector4 (0.9f, 0.0f, 1.0f, 0.0f);
+
 
 	private PaintInventory pi;
 
 	// Use this for initialization
 	void Start () {
+		desiredColor = white;
+		paintedColor = white;
 		//grab references to children
 		foreach (SpriteRenderer sr in this.gameObject.GetComponentsInChildren<SpriteRenderer>()){
-			if (sr.name == "TagSpotFront") {
-				this.tagSpotFrontRender = sr;
-			} else if (sr.name == "TagSpotBack") {
-				this.tagSpotBackRender = sr;
+			if (sr.name == "TagSprite") {
+				this.tagSpotRender = sr;
 			} else if (sr.name == "TagSpotEmoticon") {
 				this.tagSpotEmoticon = sr;
 			}
 		}
+		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
+		//ensure desiredhue is valid
+		// We dont have a desired hue. Lets get one, depending on what colors are available
+		int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
+		// We have a random index. Lets get the hue value for this color
+		desiredColor = new Vector4 (pi.getHueFromColor(colorIndex), 0.9f, 0.5f, 0.0f);
 
 		//set colors
-		Vector4 desiredColor = new Vector4 (Mathf.Clamp(desiredHue,0.0f,1.0f), 0.9f, 0.5f, 0.0f);
-		foreach (Material m in tagSpotFrontRender.materials) {
+		foreach (Material m in tagSpotRender.materials) {
 			if (m.shader.name == "Custom/HSVRangeShader") {
 				m.SetColor ("_HSVAAdjust", desiredColor);
-			}
-		}
-
-		foreach (Material m in tagSpotBackRender.materials) {
-			if (m.shader.name == "Custom/HSVRangeShader") {
-				m.SetColor ("_HSVAAdjust", whiteColor);
 			}
 		}
 
 		tagSpotEmoticon.enabled = false;
 
 
-		pi = GameObject.FindGameObjectWithTag ("PaintInventory").GetComponent<PaintInventory>();
 	}
 
 	public void paintMe(){
 		float newlyPaintedHue = pi.selectedHue;
 		if (!isPainted) {
-			Debug.Log ("Painting with hue "+newlyPaintedHue+", desiring "+desiredHue+" hue.");
+			Debug.Log ("Painting with hue "+newlyPaintedHue+", desiring "+desiredColor.x+" hue.");
 			//mark as done
 			isPainted = true;
-			paintedHue = newlyPaintedHue;
-			//paint background
-			Vector4 paintedColor = new Vector4 (paintedHue, 0.9f, 0.5f, 0.0f);
-			foreach (Material m in tagSpotBackRender.materials) {
-				if (m.shader.name == "Custom/HSVRangeShader") {
-					m.SetColor ("_HSVAAdjust", paintedColor);
-				}
-			}
+			paintedColor = new Vector4 (newlyPaintedHue, 0.9f, 0.5f, 0.0f);
 			//add emoticon
-			bool success = (paintedHue == desiredHue);
-			if (success) {
+			if (paintedSuccess) {
 				tagSpotEmoticon.sprite = successEmoticon;
 			} else {
 				tagSpotEmoticon.sprite = failureEmoticon;
@@ -91,22 +76,16 @@ public class TagSpotInit : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//ensure desiredhue is valid
-		if (desiredHue < 0.0f || desiredHue > 1.0f) {
-            // We dont have a desired hue. Lets get one, depending on what colors are available
-            int colorIndex = Random.Range(0, pi.getCurrentAvailableHueCount());
-
-            // We have a random index. Lets get the hue value for this color
-            desiredHue = pi.getHueFromColor(colorIndex);
-		}
-
-		//repaint desired color, just in case it changes.
 		if (!isPainted) {
-			Vector4 desiredColor = new Vector4 (desiredHue, 0.9f, 0.5f, 0.0f);
-			foreach (Material m in tagSpotFrontRender.materials) {
-				if (m.shader.name == "Custom/HSVRangeShader") {
-					m.SetColor ("_HSVAAdjust", desiredColor);
-				}
+			//same color, but White
+			paintedColor = new Vector4 (desiredColor.x, 0.0f, 0.0f, 0.0f);
+		}
+		//pulse desired color and paintedcolor
+		float progress = 0.5f + Mathf.Sin(Time.fixedTime * 5.0f)/2.0f;
+		Vector4 curColor = Vector3.Lerp (paintedColor, desiredColor, progress);
+		foreach (Material m in tagSpotRender.materials) {
+			if (m.shader.name == "Custom/HSVRangeShader") {
+				m.SetColor ("_HSVAAdjust", curColor);
 			}
 		}
 	}

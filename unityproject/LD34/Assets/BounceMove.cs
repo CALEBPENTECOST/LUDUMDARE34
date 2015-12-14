@@ -11,16 +11,19 @@ public class BounceMove : MonoBehaviour {
 	private Transform t;
 	//private float progress = 0.0f;
 	private Vector3 m_CurrentVelocity;
+
+	private float offset = 0.0f;
 	// Use this for initialization
 	void Start () {
 		t = this.gameObject.transform;
 		startPos = t.position;
 		endPos = t.position + new Vector3 (path.x, path.y, startPos.z);
+		offset = Random.Range(0.0f, 4.0f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		float progress = 0.5f + Mathf.Sin(Time.fixedTime)/2.0f;
+		float progress = 0.5f + Mathf.Sin(Time.fixedTime + offset)/2.0f;
 
 		Vector3 curPos = this.transform.position;
 		this.transform.position = Vector3.Lerp (startPos, endPos, progress);

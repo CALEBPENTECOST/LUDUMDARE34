@@ -21,6 +21,7 @@ public class BGScroller : MonoBehaviour {
 	/// </summary>
 	public bool canSpawnNeighbors = true;
 
+	public float widthSpacerMin = 0.0f;
 	public float widthSpacerMax = 0.0f;
 
 	private float halfWidth;
@@ -55,7 +56,7 @@ public class BGScroller : MonoBehaviour {
 				canSpawnNeighbors && 
 				(neighbors != null && neighbors.Length > 0)) {
 			GameObject neighbor = neighbors [Random.Range (0, neighbors.Length)];
-			float xOffset = halfWidth + neighbor.GetComponentInChildren<SpriteRenderer>().sprite.bounds.extents.x + Random.Range (0.0f, widthSpacerMax);
+			float xOffset = halfWidth + neighbor.GetComponentInChildren<SpriteRenderer>().sprite.bounds.extents.x + Random.Range (widthSpacerMin, widthSpacerMax);
 			if (nextNeighbor == null) {
 				nextNeighbor = Instantiate (neighbor, new Vector3 (this.transform.position.x + xOffset, this.transform.position.y, this.transform.position.z), Quaternion.identity) as GameObject;
 				nextNeighbor.GetComponentInChildren<BGScroller> ().previousNeighbor = this.gameObject;
