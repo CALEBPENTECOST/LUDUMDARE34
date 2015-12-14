@@ -18,6 +18,13 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 	public int highestMissStreak;
 	public int totalMissed;
 
+    [SerializeField]
+    private int numMatchesUntilDifficultyRaise = 5;
+    private int numDifficultyRaises = -1;
+
+    [SerializeField]
+    private ld34MenuController theMenuController;
+
 	//private Vector4 badColor = new Vector4 (0.0f, 0.9f, 0.5f, 0.0f);
 	//private Vector4 goodColor = new Vector4 (0.341f, 0.9f, 0.5f, 0.0f);
 	//private Vector4 neutralColor = new Vector4 (0.8f, 0.0f, 0.0f, 0.0f);
@@ -44,7 +51,8 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 	public void TagCompleted(bool matches){
 		if (matches) {
 			currentMatchStreak++;
-			if (highestMatchStreak < currentMatchStreak) {
+            totalMatched++;
+            if (highestMatchStreak < currentMatchStreak) {
 				scoreText.color = Color.green;
 			} else {
 				scoreText.color = Color.white;
@@ -63,6 +71,20 @@ public class ScoreKeeper : MonoBehaviour, IScoreKeeperTarget {
 			totalScore -= currentMissStreak;
 		}
 		scoreText.text = "Score: " + totalScore;
-		Debug.Log (scoreText.text);
-	}
+		//Debug.Log (scoreText.text);
+
+        //Debug.Log("Total matched: " + totalMatched);
+        // Check our scores, is it time to raise/lower difficulty?
+        if (totalMatched % numMatchesUntilDifficultyRaise == 0)
+        {
+            //Debug.Log("adding color");
+            numDifficultyRaises++;
+            if(numDifficultyRaises > 0)
+            {
+                // raise the diffuculty!
+                theMenuController.unlockNewColor();
+            }
+        }
+
+    }
 }

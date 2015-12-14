@@ -226,7 +226,7 @@ namespace UnityStandardAssets._2D
             {
                 // We have a new, valid state! We should set our current state, and then act depending on our state
                 if(nextState != CurrentState)
-                Debug.Log("New State: " + nextState.ToString());
+                //Debug.Log("New State: " + nextState.ToString());
                 CurrentState = nextState;
                 reactToStateChange();
             }

@@ -4,7 +4,7 @@ using System.Collections;
 public class GarbageCollector : MonoBehaviour {
 
 	public Transform key;
-	public float leadDistance = 500.0f;
+	private float leadDistance = 50f;
 
 	private bool seen = false;
 	private bool invisible = false;
